@@ -41,7 +41,7 @@ def func(message):
 
     elif(message.text == "Посмотреть информацию об алгоритме"):
         text = f'Данный раздел в разработке\n\n' \
-        f'Полный исходный код проекта можно посмотреть на <a href="https://clck.ru/33j8Mf">git.</a>'
+        f'Полный исходный код проекта можно посмотреть на <a href="https://github.com/Adelaaas/it_hack_Rosatom">git.</a>'
 
         bot.send_message(message.chat.id, text=text, parse_mode='HTML')
     
