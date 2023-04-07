@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from wordcloud import WordCloud
 
-token = '6257489484:AAEkfZTOuH-L4YJqvPXMwGEGsaJr09n3SJU'
+token = '5605113051:AAEyRBlEdE1V_mSYYqVFrzmjBCuM7QVkh9g'
 bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])

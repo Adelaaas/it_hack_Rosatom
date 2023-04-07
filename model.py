@@ -69,8 +69,7 @@ def model_create_learn(df):
 
 def text_generate(df):
 
-    # openai.api_key = "I_HIDE_MY_API_TOKEN"
-    openai.api_key = "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"
+    openai.api_key = "I_HIDE_MY_API_TOKEN"
 
     # задаем модель и промпт
     model_engine = "text-davinci-003"
