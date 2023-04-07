@@ -24,6 +24,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from wordcloud import WordCloud
 
+import openai
+
 def model_create_learn(df):
 
     sentence_model = TransformerWordEmbeddings('cointegrated/rubert-tiny2')
@@ -65,20 +67,35 @@ def model_create_learn(df):
 
     return result
 
-# def plot_cloud(df):
-#     topics_df = df[['Count', 'Name', 'words']]
-#     print(topics_df)
-#     data = topics_df['words'].value_counts().to_dict()
-#     print('dfkdlfk__________________')
-#     print(data)
+def text_generate(df):
 
-#     wordcloud = WordCloud(max_font_size=100,
-#                     relative_scaling=.5,
-#                     background_color="white",
-#                     colormap='viridis_r')    
+    openai.api_key = "I_HIDE_MY_API_TOKEN"
 
-#     wordcloud = wordcloud.generate_from_frequencies(data)
-#     wordcloud.to_file("simple_wordcloud.png")
+    # задаем модель и промпт
+    model_engine = "text-davinci-003"
+
+    # задаем макс кол-во слов
+    max_tokens = 6
+
+    sentences = []
+
+    for index, row in df.iterrows():
+        prompt = 'Сгенерируй 1 короткое простое предложение из слов: ' + str(row['words'])
+
+        completion = openai.Completion.create(
+            engine=model_engine,
+            prompt=prompt,
+            max_tokens=1024,
+            temperature=0.5,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+
+        # выводим ответ
+        sentences.append(completion.choices[0].text)
+
+    return sentences
 
 if __name__ == '__main__':
     PATH = 'INPUT YOUR PATH TO PREPARED DATASET'

@@ -5,7 +5,7 @@ import os
 import requests
 import datetime
 from io import BytesIO
-from model import model_create_learn #, plot_cloud    
+from model import model_create_learn, text_generate    
 from data_preprocessing import preprocessing
 from lemmatization import lemmatize
 
@@ -71,17 +71,8 @@ def document_processing(message):
     print("Bulding model")
     df = model_create_learn(df)
 
-    # topics_df = df[['Count', 'Name', 'words']]
+    # cloud plot
     data = df['Name'].value_counts().to_dict()
-
-    # print("Bot sending")
-    # # now = str(datetime.datetime.today()).split()[0]
-    # output_name = f'distribution of by topics.csv'
-    # df.to_csv(output_name)
-    # with open(output_name, 'rb') as doc:
-    #     bot.send_document(message.chat.id, doc)
-    # df = pd.read_csv('distribution of by topics.csv')
-    # print(df)
 
     wordcloud = WordCloud(max_font_size=100,
                     relative_scaling=.5,
@@ -92,9 +83,20 @@ def document_processing(message):
     wordcloud.to_file("simple_wordcloud.png")
 
     print("Bot send image")
-
     img = open("simple_wordcloud.png", 'rb')
     bot.send_photo(message.chat.id, img)
+
+    # print('ChatGPT meaningful topic phrases generate from words')
+    # df = pd.read_csv('C:/Users/Аделя/Desktop/hack карьерный клуб/it_hack_Rosatom/distribution of by topics.csv')
+    # tmp = text_generate(df)
+    # print(tmp)
+
+    print("Dataset and predicted topic to each answer file")
+    output_name = f'distribution of by topics.csv'
+    df.to_csv(output_name)
+    with open(output_name, 'rb') as doc:
+        bot.send_document(message.chat.id, doc)
+    df = pd.read_csv('distribution of by topics.csv')
 
 
 if __name__ == '__main__':
