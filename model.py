@@ -25,6 +25,7 @@ import matplotlib as mpl
 from wordcloud import WordCloud
 
 import openai
+import config
 
 def model_create_learn(df):
 
@@ -69,7 +70,8 @@ def model_create_learn(df):
 
 def text_generate(df):
 
-    openai.api_key = "I_HIDE_MY_API_TOKEN"
+    # openai.api_key = "I_HIDE_MY_API_TOKEN"
+    openai.api_key = config.ChatGPR_token
 
     # задаем модель и промпт
     model_engine = "text-davinci-003"
