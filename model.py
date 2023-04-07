@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 # Text preprocessiong
 import nltk
+import re
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 nltk.download('omw-1.4')
@@ -19,7 +20,9 @@ from hdbscan import HDBSCAN
 from sklearn.feature_extraction.text import CountVectorizer
 from bertopic.vectorizers import ClassTfidfTransformer
 
-import re
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from wordcloud import WordCloud
 
 def model_create_learn(df):
 
@@ -61,3 +64,28 @@ def model_create_learn(df):
     result = df.merge(topics_df, on=['Topic'])
 
     return result
+
+def plot_cloud(df):
+    topics_df = df[['Count', 'Name', 'words']]
+    print(topics_df)
+    data = topics_df['words'].value_counts().to_dict()
+    print('dfkdlfk__________________')
+    print(data)
+
+    wordcloud = WordCloud(max_font_size=100,
+                    relative_scaling=.5,
+                    background_color="white",
+                    colormap='viridis_r')    
+
+    wordcloud = wordcloud.generate_from_frequencies(data)
+    wordcloud.to_file("simple_wordcloud.png")
+
+if __name__ == '__main__':
+    PATH = 'INPUT YOUR PATH TO PREPARED DATASET'
+    PATH = 'C:/Users/Аделя/Desktop/hack карьерный клуб/it_hack_Rosatom/distribution of by topics.csv'
+    df = pd.read_csv(PATH)
+
+    # result = model_create_learn(df)
+    result = plot_cloud(df)
+
+    print(result)

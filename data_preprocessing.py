@@ -34,13 +34,15 @@ def data_prep(df):
 
 
 def preprocessing(df):
-    # url = 'https://raw.githubusercontent.com/Adelaaas/it_hack_Rosatom/main/%D0%9C%D0%B0%D1%81%D1%81%D0%B8%D0%B2%20%D0%B4%D0%BB%D1%8F%20%D1%85%D0%B0%D0%BA%D0%B0%D1%82%D0%BE%D0%BD%D0%B0%20%D0%9C%D0%98%D0%A4%D0%98.csv'
-
-    # df = pd.read_csv(url)
-    # df.drop(columns=['Unnamed: 0'], inplace=True)
-    # df.columns = ['Answers']
 
     df = data_prep(df)
-    # df.to_csv('C:/Users/Аделя/Desktop/hack карьерный клуб/prapared_data.csv')
 
     return df
+
+if __name__ == '__main__':
+    PATH = 'INPUT YOUR PATH TO FILE'
+    df = pd.read_csv(PATH)
+
+    df = preprocessing(df)
+
+    print(df)

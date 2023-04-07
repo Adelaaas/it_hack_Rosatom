@@ -72,6 +72,8 @@ def document_processing(message):
     df = model_create_learn(df)
 
     print(df)
+    topics_df = df[['Count', 'Name', 'words']]
+    data = topics_df['words'].value_counts().to_dict()
 
     print("Bot sending")
     # now = str(datetime.datetime.today()).split()[0]
@@ -81,28 +83,34 @@ def document_processing(message):
         bot.send_document(message.chat.id, doc)
     
     print("Bot ploting")
-
-    topics_df = df[['Count', 'Name', 'words']]
-    print(topics_df)
-    topics_df = topics_df.drop_duplicates()
-    print('dfkdlfk__________________')
-
-    full_dict = list(zip(topics_df['words'], topics_df['Count']))
-    data = dict(full_dict)
-    print(data)
-
-    wordcloud = WordCloud(max_font_size=100,
-                    relative_scaling=.5,
-                    background_color="white",
-                    colormap='viridis_r')    
-    
-    wordcloud = wordcloud.generate_from_frequencies(data)
-    wordcloud.to_file("simple_wordcloud.png")
-
+    plot_cloud(df)
     print("Bot send image")
 
     img = open("simple_wordcloud.png", 'rb')
     bot.send_photo(message.chat.id, img)
+
+    # topics_df = df[['Count', 'Name', 'words']]
+    # print(topics_df)
+    # data = topics_df['words'].value_counts().to_dict()
+    # print('dfkdlfk__________________')
+    # print(data)
+
+    # full_dict = list(zip(topics_df['words'], topics_df['Count']))
+    # data = dict(full_dict)
+    # print(data)
+
+    # wordcloud = WordCloud(max_font_size=100,
+    #                 relative_scaling=.5,
+    #                 background_color="white",
+    #                 colormap='viridis_r')    
+    
+    # wordcloud = wordcloud.generate_from_frequencies(data)
+    # wordcloud.to_file("simple_wordcloud.png")
+
+    # print("Bot send image")
+
+    # img = open("simple_wordcloud.png", 'rb')
+    # bot.send_photo(message.chat.id, img)
 
 
 if __name__ == '__main__':

@@ -10,20 +10,10 @@ df = pd.read_csv("C:/Users/Аделя/Desktop/hack карьерный клуб/i
 
 topics_df = df[['Count', 'Name', 'words']]
 
-print(topics_df)
+data = topics_df['words'].value_counts().to_dict()
+print(data)
 
-topics_df = topics_df.drop_duplicates()
 
-print(topics_df)
-
-full_dict = list(zip(topics_df['words'], topics_df['Count']))
-
-wordcloud = WordCloud(max_font_size=100,
-                  relative_scaling=.5,
-                  background_color="white",
-                  colormap='viridis_r')
-wordcloud = wordcloud.generate_from_frequencies(dict(full_dict))
-wordcloud.to_file("simple_wordcloud.png")
 # plt.figure()
 # plt.imshow(wordcloud)
 # plt.axis("off")

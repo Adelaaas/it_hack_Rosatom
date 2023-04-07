@@ -11,15 +11,18 @@ def lemmatize(df):
             list.append(morph.parse(word)[0].normal_form)
         return ' '.join(list)
 
-    # train = pd.read_csv("C:/Users/Аделя/Desktop/hack карьерный клуб/prapared_data.csv")
     morph = pymorphy2.MorphAnalyzer()
-    # # train = train.iloc[:5,:]
-    # print(train)
 
     df = df[df["Number of Words"] > 2]
 
     df['cleaned_answers_lemm'] = df['cleaned_answers'].apply(converter)
 
-    # df.to_csv("C:/Users/Аделя/Desktop/hack карьерный клуб/prapared_data_with_lemm.csv", index=False)
-
     return df
+
+if __name__ == '__main__':
+    PATH = 'INPUT YOUR PATH TO FILE'
+    df = pd.read_csv(PATH)
+
+    df = lemmatize(df)
+
+    print(df)
