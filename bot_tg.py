@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from wordcloud import WordCloud
 
-token = '6257489484:AAEkfZTOuH-L4YJqvPXMwGEGsaJr09n3SJU'
+token = '5605113051:AAEyRBlEdE1V_mSYYqVFrzmjBCuM7QVkh9g'
 bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
@@ -61,6 +61,7 @@ def document_processing(message):
 
     bot.send_message(message.chat.id, text="Please wait this may take some time...")
 
+    """ Тут начинается обработка полученного файла (предобработка, кластеризация и выделение топиков (тем))"""
     df = pd.read_excel('data.xlsx')
     df.columns = ['Answers']
 
@@ -71,7 +72,7 @@ def document_processing(message):
     print("Bulding model")
     df = model_create_learn(df)
 
-    # cloud plot
+    """ Тут идёт визуализация топиков (cloud), сохранение картинки и отправка пользователю """
     data = df['Name'].value_counts().to_dict()
 
     wordcloud = WordCloud(max_font_size=100,
@@ -82,21 +83,21 @@ def document_processing(message):
     wordcloud = wordcloud.generate_from_frequencies(data)
     wordcloud.to_file("simple_wordcloud.png")
 
-    print("Bot send image")
     img = open("simple_wordcloud.png", 'rb')
     bot.send_photo(message.chat.id, img)
 
+    """ Генерация осмысленных фраз описывающих кластеры/топики """
     # print('ChatGPT meaningful topic phrases generate from words')
     # df = pd.read_csv('C:/Users/Аделя/Desktop/hack карьерный клуб/it_hack_Rosatom/distribution of by topics.csv')
     # tmp = text_generate(df)
     # print(tmp)
 
+    """ Добавление в исходный файл к каждому ответу предсказанный топик и возврат пользвателю """
     print("Dataset and predicted topic to each answer file")
     output_name = f'distribution of by topics.csv'
-    df.to_csv(output_name)
+    df[['Answers', 'words']].to_csv(output_name)
     with open(output_name, 'rb') as doc:
         bot.send_document(message.chat.id, doc)
-    df = pd.read_csv('distribution of by topics.csv')
 
 
 if __name__ == '__main__':
