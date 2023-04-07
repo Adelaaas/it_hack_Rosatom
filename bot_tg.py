@@ -13,7 +13,9 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from wordcloud import WordCloud
 
-token = '5605113051:AAEyRBlEdE1V_mSYYqVFrzmjBCuM7QVkh9g'
+import config
+
+token = config.bot_token
 bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
