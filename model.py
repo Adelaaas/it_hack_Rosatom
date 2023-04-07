@@ -69,7 +69,8 @@ def model_create_learn(df):
 
 def text_generate(df):
 
-    openai.api_key = "I_HIDE_MY_API_TOKEN"
+    # openai.api_key = "I_HIDE_MY_API_TOKEN"
+    openai.api_key = "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"
 
     # задаем модель и промпт
     model_engine = "text-davinci-003"
@@ -78,9 +79,10 @@ def text_generate(df):
     max_tokens = 6
 
     sentences = []
+    df['meaningful_topics'] = ''
 
     for index, row in df.iterrows():
-        prompt = 'Сгенерируй 1 короткое простое предложение из слов: ' + str(row['words'])
+        prompt = 'Сгенерируй 1 короткую простою фразу из слов: ' + str(row['words'])
 
         completion = openai.Completion.create(
             engine=model_engine,
@@ -93,9 +95,12 @@ def text_generate(df):
         )
 
         # выводим ответ
-        sentences.append(completion.choices[0].text)
+        df.loc[index, 'meaningful_topics'] = completion.choices[0].text
 
-    return sentences
+        sentences.append(completion.choices[0].text)
+        # print(f"print {completion.choices[0].text}")
+
+    return df
 
 if __name__ == '__main__':
     PATH = 'INPUT YOUR PATH TO PREPARED DATASET'

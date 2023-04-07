@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from wordcloud import WordCloud
 
-token = '5605113051:AAEyRBlEdE1V_mSYYqVFrzmjBCuM7QVkh9g'
+token = '6257489484:AAEkfZTOuH-L4YJqvPXMwGEGsaJr09n3SJU'
 bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
@@ -83,17 +83,49 @@ def document_processing(message):
     wordcloud = wordcloud.generate_from_frequencies(data)
     wordcloud.to_file("simple_wordcloud.png")
 
+    text = f'Данное облако сформировано по набору слов для каждого кластера ответов.\n\n' \
+        f'Всего модель после обучения сформировала {len(data)} кластеров, объединенные по смыслу\n\n'
+    bot.send_message(message.chat.id, text=text, parse_mode='HTML')
+
     img = open("simple_wordcloud.png", 'rb')
     bot.send_photo(message.chat.id, img)
 
-    """ Генерация осмысленных фраз описывающих кластеры/топики """
+    """ Генерация осмысленных фраз описывающих кластеры/топики
+    И построения облака для этих фраз"""
     # print('ChatGPT meaningful topic phrases generate from words')
-    # df = pd.read_csv('C:/Users/Аделя/Desktop/hack карьерный клуб/it_hack_Rosatom/distribution of by topics.csv')
-    # tmp = text_generate(df)
-    # print(tmp)
+    data = df['words'].value_counts().reset_index()
+    data.columns = ['words', 'Count']
+
+    data = text_generate(data)
+
+    data['meaningful_topics'] = data['meaningful_topics'].str.replace('\\n\\n','')
+    data['meaningful_topics'] = data['meaningful_topics'].str.replace('"','')
+
+    data = data.set_index('meaningful_topics')['Count'].to_dict()
+
+    wordcloud = WordCloud(max_font_size=100,
+                    relative_scaling=.5,
+                    background_color="white",
+                    colormap='viridis_r')    
+    
+    wordcloud = wordcloud.generate_from_frequencies(data)
+    wordcloud.to_file("advantage_wordcloud.png")
+
+    text = f'Данное облако сформировано по осмысленным фразам для каждого кластера ответов.\n\n' \
+        f'Осмысленные фразы были сгенерированы по набору слов для кластера с помощью ChatGPT.\n\n' \
+        f'Всего модель после обучения сформировала {len(data)} кластеров, объединенные по смыслу\n\n'
+    bot.send_message(message.chat.id, text=text, parse_mode='HTML')
+
+    img = open("advantage_wordcloud.png", 'rb')
+    bot.send_photo(message.chat.id, img)
+
 
     """ Добавление в исходный файл к каждому ответу предсказанный топик и возврат пользвателю """
     print("Dataset and predicted topic to each answer file")
+    text = f'В ваш исходный файл добавлена еще одна колонка, в которой.\n\n' \
+        f'указана тема для каждого ответа, полученная после обучения\n'
+    bot.send_message(message.chat.id, text=text, parse_mode='HTML')
+
     output_name = f'distribution of by topics.csv'
     df[['Answers', 'words']].to_csv(output_name)
     with open(output_name, 'rb') as doc:
