@@ -5,7 +5,13 @@ import os
 import requests
 import datetime
 from io import BytesIO
-from model import test
+from model import model_create_learn
+from data_preprocessing import preprocessing
+from lemmatization import lemmatize
+
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from wordcloud import WordCloud
 
 token = '6257489484:AAEkfZTOuH-L4YJqvPXMwGEGsaJr09n3SJU'
 bot = telebot.TeleBot(token)
@@ -53,16 +59,50 @@ def document_processing(message):
     with open('data.xlsx', 'wb') as f:
         f.write(doc.content)
 
+    bot.send_message(message.chat.id, text="Please wait this may take some time...")
+
     df = pd.read_excel('data.xlsx')
     df.columns = ['Answers']
 
-    test(df)
+    print("Data preprocessing")
+    df = preprocessing(df)
+    df = lemmatize(df)
 
+    print("Bulding model")
+    df = model_create_learn(df)
+
+    print(df)
+
+    print("Bot sending")
     # now = str(datetime.datetime.today()).split()[0]
-    # output_name = f'distribution of students by topics_{now}.csv'
-    # df.to_csv(output_name)
-    # with open(output_name, 'rb') as doc:
-    #     bot.send_document(message.chat.id, doc)
+    output_name = f'distribution of by topics.csv'
+    df.to_csv(output_name)
+    with open(output_name, 'rb') as doc:
+        bot.send_document(message.chat.id, doc)
+    
+    print("Bot ploting")
+
+    topics_df = df[['Count', 'Name', 'words']]
+    print(topics_df)
+    topics_df = topics_df.drop_duplicates()
+    print('dfkdlfk__________________')
+
+    full_dict = list(zip(topics_df['words'], topics_df['Count']))
+    data = dict(full_dict)
+    print(data)
+
+    wordcloud = WordCloud(max_font_size=100,
+                    relative_scaling=.5,
+                    background_color="white",
+                    colormap='viridis_r')    
+    
+    wordcloud = wordcloud.generate_from_frequencies(data)
+    wordcloud.to_file("simple_wordcloud.png")
+
+    print("Bot send image")
+
+    img = open("simple_wordcloud.png", 'rb')
+    bot.send_photo(message.chat.id, img)
 
 
 if __name__ == '__main__':

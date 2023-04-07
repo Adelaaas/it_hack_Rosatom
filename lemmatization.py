@@ -1,7 +1,6 @@
 import pymorphy2
 import pandas as pd 
 
-
 def lemmatize(df):
 
     def converter(sentence):
