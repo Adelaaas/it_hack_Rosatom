@@ -5,7 +5,7 @@ import os
 import requests
 import datetime
 from io import BytesIO
-from model import model_create_learn
+from model import model_create_learn #, plot_cloud    
 from data_preprocessing import preprocessing
 from lemmatization import lemmatize
 
@@ -71,46 +71,30 @@ def document_processing(message):
     print("Bulding model")
     df = model_create_learn(df)
 
-    print(df)
-    topics_df = df[['Count', 'Name', 'words']]
-    data = topics_df['words'].value_counts().to_dict()
+    # topics_df = df[['Count', 'Name', 'words']]
+    data = df['Name'].value_counts().to_dict()
 
-    print("Bot sending")
-    # now = str(datetime.datetime.today()).split()[0]
-    output_name = f'distribution of by topics.csv'
-    df.to_csv(output_name)
-    with open(output_name, 'rb') as doc:
-        bot.send_document(message.chat.id, doc)
+    # print("Bot sending")
+    # # now = str(datetime.datetime.today()).split()[0]
+    # output_name = f'distribution of by topics.csv'
+    # df.to_csv(output_name)
+    # with open(output_name, 'rb') as doc:
+    #     bot.send_document(message.chat.id, doc)
+    # df = pd.read_csv('distribution of by topics.csv')
+    # print(df)
+
+    wordcloud = WordCloud(max_font_size=100,
+                    relative_scaling=.5,
+                    background_color="white",
+                    colormap='viridis_r')    
     
-    print("Bot ploting")
-    plot_cloud(df)
+    wordcloud = wordcloud.generate_from_frequencies(data)
+    wordcloud.to_file("simple_wordcloud.png")
+
     print("Bot send image")
 
     img = open("simple_wordcloud.png", 'rb')
     bot.send_photo(message.chat.id, img)
-
-    # topics_df = df[['Count', 'Name', 'words']]
-    # print(topics_df)
-    # data = topics_df['words'].value_counts().to_dict()
-    # print('dfkdlfk__________________')
-    # print(data)
-
-    # full_dict = list(zip(topics_df['words'], topics_df['Count']))
-    # data = dict(full_dict)
-    # print(data)
-
-    # wordcloud = WordCloud(max_font_size=100,
-    #                 relative_scaling=.5,
-    #                 background_color="white",
-    #                 colormap='viridis_r')    
-    
-    # wordcloud = wordcloud.generate_from_frequencies(data)
-    # wordcloud.to_file("simple_wordcloud.png")
-
-    # print("Bot send image")
-
-    # img = open("simple_wordcloud.png", 'rb')
-    # bot.send_photo(message.chat.id, img)
 
 
 if __name__ == '__main__':

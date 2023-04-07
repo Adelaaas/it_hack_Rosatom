@@ -65,20 +65,20 @@ def model_create_learn(df):
 
     return result
 
-def plot_cloud(df):
-    topics_df = df[['Count', 'Name', 'words']]
-    print(topics_df)
-    data = topics_df['words'].value_counts().to_dict()
-    print('dfkdlfk__________________')
-    print(data)
+# def plot_cloud(df):
+#     topics_df = df[['Count', 'Name', 'words']]
+#     print(topics_df)
+#     data = topics_df['words'].value_counts().to_dict()
+#     print('dfkdlfk__________________')
+#     print(data)
 
-    wordcloud = WordCloud(max_font_size=100,
-                    relative_scaling=.5,
-                    background_color="white",
-                    colormap='viridis_r')    
+#     wordcloud = WordCloud(max_font_size=100,
+#                     relative_scaling=.5,
+#                     background_color="white",
+#                     colormap='viridis_r')    
 
-    wordcloud = wordcloud.generate_from_frequencies(data)
-    wordcloud.to_file("simple_wordcloud.png")
+#     wordcloud = wordcloud.generate_from_frequencies(data)
+#     wordcloud.to_file("simple_wordcloud.png")
 
 if __name__ == '__main__':
     PATH = 'INPUT YOUR PATH TO PREPARED DATASET'
@@ -86,6 +86,6 @@ if __name__ == '__main__':
     df = pd.read_csv(PATH)
 
     # result = model_create_learn(df)
-    result = plot_cloud(df)
+    # result = plot_cloud(df)
 
     print(result)
